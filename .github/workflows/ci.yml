@@ -218,9 +218,10 @@ jobs:
           make build
           make binaries
         working-directory: src/github.com/containerd/containerd
-
-
-
+  #
+  # Integration and CRI tests
+  #
+  
   integration-linux:
     name: Linux Integration
     runs-on: ubuntu-18.04
