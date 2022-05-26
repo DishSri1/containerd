@@ -119,17 +119,8 @@ jobs:
           
   armv64_job:
       name: Build and Test for arm64
-      runs-on: ubuntu-18.04
-      strategy:
-        fail-fast: false
-        matrix:
-         runtime: [io.containerd.runtime.v1.linux, io.containerd.runc.v1, io.containerd.runc.v2]
-         runc: [runc, crun]
-         exclude:
-          - runtime: io.containerd.runc.v1
-            runc: crun
-          - runtime: io.containerd.runtime.v1.linux
-            runc: crun
+      runs-on: ubuntu-20.04
+      
       env:
         GOTEST: gotestsum --
       steps:
@@ -144,7 +135,7 @@ jobs:
         - name: Install and Run tests
           run: |
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-              arm64v8/ubuntu:18.04 \
+              arm64v8/ubuntu:20.04 \
               bash -exc 'apt-get update && \
               apt-get install sudo -y
               sudo apt-get install -y gperf
