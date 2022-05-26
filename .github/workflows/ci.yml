@@ -136,9 +136,9 @@ jobs:
           run: |
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
               arm64v8/ubuntu:20.04 \
-              bash -exc 'apt-get update && \
+              bash -exc 'apt-get update && apt-get install git && \
               apt-get install sudo -y
-              apt-get install git
+              
               sudo apt-get install -y gperf
               
               sudo -E PATH=$PATH script/setup/install-runc
