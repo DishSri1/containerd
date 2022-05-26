@@ -137,7 +137,7 @@ jobs:
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
               arm64v8/ubuntu:18.04 \
               bash -exc 'apt-get update  && \
-              apt-get install sudo -y && \
+              apt-get install -y sudo && \
               sudo apt-get install -y gperf && \
               sudo -E PATH=$PATH script/setup/install-seccomp && \
               sudo -E PATH=$PATH script/setup/install-runc && \
