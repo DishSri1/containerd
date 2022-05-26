@@ -136,8 +136,8 @@ jobs:
           run: |
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
               arm64v8/ubuntu:20.04 \
-              bash -exc 'apt-get update && apt-get install git && \
-              apt-get install sudo -y
+              bash -exc 'apt-get update && apt-get install git && apt-get install sudo -y && \
+              
               
               sudo apt-get install -y gperf
               
