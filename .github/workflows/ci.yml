@@ -139,11 +139,12 @@ jobs:
               bash -exc 'apt-get update  && \
               apt-get install sudo -y && \
               
-              sudo apt-get install -y gperf
+              sudo apt-get install -y gperf && \
+              sudo -E PATH=$PATH script/setup/install-seccomp && \
+              sudo -E PATH=$PATH script/setup/install-runc && \
+              sudo -E PATH=$PATH script/setup/install-cni $(grep containernetworking/plugins go.mod | awk '{print $2}') && \
+              sudo -E PATH=$PATH script/setup/install-critools && \
               
-              sudo -E PATH=$PATH script/setup/install-cni $(grep containernetworking/plugins go.mod | awk '{print $2}')
-              sudo -E PATH=$PATH script/setup/install-critools
-              
-              make test
-              sudo -E PATH=$PATH make root-test
+              make test && \
+              sudo -E PATH=$PATH make root-test &&  \
               deactivate'
