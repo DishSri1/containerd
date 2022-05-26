@@ -137,11 +137,11 @@ jobs:
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
               arm64v8/ubuntu:18.04 \
               bash -exc 'apt-get update  && \
-              uname -m
-              apt-get install -y sudo 
+              uname -m && \
+              apt-get install -y sudo && \
               sudo apt-get install -y gperf && \
               sudo -E PATH=$PATH script/setup/install-seccomp && \
               sudo -E PATH=$PATH script/setup/install-runc && \
               sudo -E PATH=$PATH script/setup/install-cni $(grep containernetworking/plugins go.mod | awk '{print $2}') && \
               sudo -E PATH=$PATH script/setup/install-critools && \
-              make test && \'
+              make test '&& \
