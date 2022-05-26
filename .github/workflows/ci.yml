@@ -115,76 +115,7 @@ jobs:
       - run: go install github.com/cpuguy83/go-md2man/v2@v2.0.1
       - run: make man
 
-  # Make sure binaries compile with other platforms
-  crossbuild:
-    name: Crossbuild Binaries
-    needs: [project, linters, protos, man]
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - goos: linux
-            goarch: arm64
-          - goos: linux
-            goarch: arm
-            goarm: "7"
-          - goos: linux
-            goarch: arm
-            goarm: "5"
-          
-          
-    env:
-      GOTEST: gotestsum --
-    steps:
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.18.2'
-      - uses: actions/checkout@v2
-      - run: |
-          set -e -x
-
-          packages="libbtrfs-dev"
-          platform="${{matrix.goos}}/${{matrix.goarch}}"
-          if [ -n "${{matrix.goarm}}" ]; then
-            platform+="/v${{matrix.goarm}}"
-          fi
-
-          case "${platform}" in
-          linux/arm/v5)
-            packages+=" crossbuild-essential-armel"
-            echo "CGO_ENABLED=1" >> $GITHUB_ENV
-            echo "CC=arm-linux-gnueabi-gcc" >> $GITHUB_ENV
-            ;;
-          linux/arm/v7)
-            packages+=" crossbuild-essential-armhf"
-            echo "CGO_ENABLED=1" >> $GITHUB_ENV
-            echo "CC=arm-linux-gnueabihf-gcc" >> $GITHUB_ENV
-            ;;
-          linux/arm64)
-            packages+=" crossbuild-essential-arm64"
-            echo "CGO_ENABLED=1" >> $GITHUB_ENV
-            echo "CC=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
-            ;;
-          
-          windows/arm/v7)
-            echo "CGO_ENABLED=0" >> $GITHUB_ENV
-            ;;
-          esac
-
-          if [ -n "${packages}" ]; then
-            sudo apt-get update && sudo apt-get install -y ${packages}
-          fi
-        name: Install deps
-      - name: Build
-        env:
-          GOOS: ${{matrix.goos}}
-          GOARCH: ${{matrix.goarch}}
-          GOARM: ${{matrix.goarm}}
-        run: |
-          make build
-          make binaries
+  
           
   armv64_job:
       name: Build and Test for arm64
@@ -215,6 +146,7 @@ jobs:
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
               arm64v8/ubuntu:18.04 \
               bash -exc 'apt-get update && \
+              apt-get install sudo -y
               sudo apt-get install -y gperf
               sudo -E PATH=$PATH script/setup/install-seccomp
               sudo -E PATH=$PATH script/setup/install-runc
